@@ -1,0 +1,40 @@
+{
+    "data": {
+        "type": "mongo|sql|rest",
+        "mongo": {
+            "query": {
+                "date": {
+                    "$gt": ISODate('2014-12-11T13:21:50Z')
+                },
+                "{{ parameters.key_one.key }}": "{{ parameters.key_one.value }}"
+            }
+        },
+        "rest": {
+            "url": "http://example.com/api/v2/grab_data?{{ parameters.key_one.key }}={{ parameters.key_one.value | url_encode }}",
+            "format": "json"
+        },
+        "sql": {
+            "query": "SELECT * FROM table WHERE {{ parameters.key_one.key }} = '{{ parameters.key_one.value }}'"
+        }
+    },
+    "parameters": {
+        "key_one": {
+            "key": "key_one",
+            "type": "string",
+            "value": "value_one"
+        },
+        "key_two": {
+            "key": "key_two",
+            "type": "date",
+            "value": "{{ date('r') }}"
+        }
+    },
+    "variables": {
+
+    },
+    "output": [
+        {
+            "type": "pdf|csv|html|xls|json|xml"
+        }
+    ]
+}

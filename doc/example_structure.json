@@ -20,7 +20,7 @@
             "query": "SELECT * FROM users WHERE {{ parameters.created.key }} > '{{ parameters.created.value }}' AND {{ parameters.username.key }} <> '{{ parameters.username.value }}'"
         }
     },
-    "parameters": {
+    "parameters": [
         {
             "key": "created", // Used to identify parameter later on
             "type": "datetime", // Defaults to string
@@ -31,14 +31,14 @@
             "type": "string",
             "value": "admin"
         }
-    },
-    "variables": {
+    ],
+    "variables": [
         {
             "key": "avg_post_count", // Used to identify variable later on
             "type": "integer", // Defaults to string
             "expression": "AVG('post_count)" // Calculation expression
         }
-    },
+    ],
     "fields": [
         {
             "label": "User ID", // Defaults to field name

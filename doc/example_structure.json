@@ -1,37 +1,62 @@
 {
-    "data": {
+    "source": {
         "type": "mongo|sql|rest",
         "mongo": {
+            "collection": "users",
             "query": {
-                "date": {
-                    "$gt": ISODate('2014-12-11T13:21:50Z')
+                "{{ parameters.created.key }}": {
+                    "$gt": "{{ parameters.created.value }}"
                 },
-                "{{ parameters.key_one.key }}": "{{ parameters.key_one.value }}"
+                "{{ parameters.username.key }}": {
+                    "$not": "{{ parameters.username.value }}"
+                }
             }
         },
         "rest": {
-            "url": "http://example.com/api/v2/grab_data?{{ parameters.key_one.key }}={{ parameters.key_one.value | url_encode }}",
+            "url": "http://example.com/api/v2/grab_users?{{ parameters.created.key }}={{ parameters.created.value | url_encode }}&{{ parameters.username.key }}={{ parameters.username.value }}",
             "format": "json"
         },
         "sql": {
-            "query": "SELECT * FROM table WHERE {{ parameters.key_one.key }} = '{{ parameters.key_one.value }}'"
+            "query": "SELECT * FROM users WHERE {{ parameters.created.key }} > '{{ parameters.created.value }}' AND {{ parameters.username.key }} <> '{{ parameters.username.value }}'"
         }
     },
     "parameters": {
-        "key_one": {
-            "key": "key_one",
-            "type": "string",
-            "value": "value_one"
+        {
+            "key": "created", // Used to identify parameter later on
+            "type": "datetime", // Defaults to string
+            "value": "{{ date('U') }}" // Default value
         },
-        "key_two": {
-            "key": "key_two",
-            "type": "date",
-            "value": "{{ date('r') }}"
+        {
+            "key": "username",
+            "type": "string",
+            "value": "admin"
         }
     },
     "variables": {
-
+        {
+            "key": "avg_post_count", // Used to identify variable later on
+            "type": "integer", // Defaults to string
+            "expression": "AVG('post_count)" // Calculation expression
+        }
     },
+    "fields": [
+        {
+            "label": "User ID", // Defaults to field name
+            "source": "source.id", // Field source
+            "type": "integer", // Defaults to string
+            "format": "#{{ value | number_format(3) }}" // Defaults to value
+        },
+        {
+            "source": "source.username",
+            "type": "string",
+            "format": "{{ value | capitalize }}"
+        },
+        {
+            "label": "Email address",
+            "source": "source.email",
+            "type": "email"
+        }
+    ],
     "output": [
         {
             "type": "pdf|csv|html|xls|json|xml"
